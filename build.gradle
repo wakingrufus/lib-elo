@@ -1,6 +1,6 @@
 buildscript {
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.1.4"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.0"
     }
     repositories {
         mavenCentral()
@@ -10,20 +10,29 @@ buildscript {
 plugins {
     id 'java'
     id 'idea'
-    id "org.jetbrains.kotlin.jvm" version "1.1.4"
+    id "org.jetbrains.kotlin.jvm" version "1.2.0"
     id 'jacoco'
+    id 'maven'
+    id 'signing'
+    id 'io.codearte.nexus-staging' version '0.11.0'
 }
 
 repositories {
     mavenCentral()
 }
 
-version = "0.1.0"
+ext {
+    pomFile = file("${project.buildDir}/generated-pom.xml")
+    isReleaseVersion = !(project.version =~ /-SNAPSHOT$/)
+}
+
+version = "0.2.0"
+project.group = "com.github.wakingrufus"
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8"
     compile 'org.projectlombok:lombok:1.16.18'
-    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    compile 'org.slf4j:slf4j-api:1.7.25'
     compile 'io.github.microutils:kotlin-logging:1.4.4'
     compile "org.jetbrains.kotlin:kotlin-reflect"
     compile "org.jsoup:jsoup:1.10.3"
@@ -31,9 +40,9 @@ dependencies {
     testCompile "org.jetbrains.kotlin:kotlin-test"
     testCompile "org.jetbrains.kotlin:kotlin-test-junit"
     testCompile 'org.mockito:mockito-core:2.8.9'
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile  'junit:junit:4.12'
     testCompile "com.nhaarman:mockito-kotlin-kt1.1:1.5.0"
-    testCompile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.25'
+    testCompile 'org.slf4j:slf4j-log4j12:1.7.25'
 }
 
 idea {
@@ -43,7 +52,7 @@ idea {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.3.1'
+    gradleVersion = '4.2.1'
 }
 
 jacocoTestReport {
@@ -64,4 +73,76 @@ compileTestKotlin {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-} 
+}
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives jar
+    archives sourcesJar
+    archives javadocJar
+}
+
+signing {
+    required { signatory != null && project.ext.isReleaseVersion }
+    sign configurations.archives
+}
+
+nexusStaging {
+    packageGroup = "com.github.wakingrufus"
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            pom.project {
+                name 'lib-elo'
+                packaging 'jar'
+                group project.group
+                version project.version
+                // optionally artifactId can be defined here
+                description 'A library which performs ELO calculations for a game league (such as chess)'
+                url 'https://github.com/wakingrufus/lib-elo'
+
+                scm {
+                    connection 'scm:git:https://github.com/wakingrufus/lib-elo.git'
+                    developerConnection 'scm:git:https://github.com/wakingrufus/lib-elo.git/'
+                    url 'https://github.com/wakingrufus/lib-elo'
+                }
+
+                licenses {
+                    license {
+                        name 'MIT License'
+                        url 'https://opensource.org/licenses/MIT'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'wakingrufus'
+                        name 'Rufus'
+                        email 'wakingrufus@gmail.com'
+                    }
+                }
+            }
+        }
+    }
+}

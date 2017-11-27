@@ -8,3 +8,5 @@ shippable/
 *.iml
 *.ipr
 *.iws
+*.asc
+*.gpg
