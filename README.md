@@ -4,6 +4,10 @@ Library for ELO calculations for game leagues
 [![Run Status](https://api.shippable.com/projects/5a12e20c79f26b0700c37035/badge?branch=master)](https://app.shippable.com/github/wakingrufus/lib-elo)
 [![Coverage Badge](https://api.shippable.com/projects/5a12e20c79f26b0700c37035/coverageBadge?branch=master)](https://app.shippable.com/github/wakingrufus/lib-elo)
 
+## Features
+- Support for _n_-sized teams
+- "Exhibition" period: first _n_ games can have and adjustment multiplier in order to move a player to their proper rating faster. Their opponents will get an inverse multiplier.
+
 ## Usage
 
 First, start a league by creating a league object with the configuration for the league:

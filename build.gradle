@@ -27,7 +27,7 @@ ext {
     isReleaseVersion = !(project.version =~ /-SNAPSHOT$/)
 }
 
-version = "0.2.1"
+version = "0.2.2"
 project.group = "com.github.wakingrufus"
 
 dependencies {
@@ -35,11 +35,11 @@ dependencies {
     compile 'org.projectlombok:lombok:1.16.18'
     compile 'org.slf4j:slf4j-api:1.7.25'
     compile 'io.github.microutils:kotlin-logging:1.4.4'
-    compile "org.jetbrains.kotlin:kotlin-reflect"
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     compile "org.jsoup:jsoup:1.10.3"
 
-    testCompile "org.jetbrains.kotlin:kotlin-test"
-    testCompile "org.jetbrains.kotlin:kotlin-test-junit"
+    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
+    testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
     testCompile 'org.mockito:mockito-core:2.8.9'
     testCompile  'junit:junit:4.12'
     testCompile "com.nhaarman:mockito-kotlin-kt1.1:1.5.0"
