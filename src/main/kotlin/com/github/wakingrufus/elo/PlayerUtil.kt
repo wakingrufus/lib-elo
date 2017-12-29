@@ -1,22 +1,19 @@
 package com.github.wakingrufus.elo
 
 
-fun calculateTeamStartingRating(players: List<Player>): Int {
-    var teamStartingRating = 0
-    players.forEach { teamStartingRating += it.currentRating }
-    return teamStartingRating / players.size
+fun calculateTeamRating(players: Collection<Player>): Int {
+    return players.sumBy { it.currentRating }.div(players.size)
 }
 
-fun calculateTeamAverageGamesPlayed(players: List<Player>): Int {
-    var teamGamesPlayed = 0
-    players.forEach { teamGamesPlayed += it.gamesPlayed }
-    return teamGamesPlayed / players.size
+fun calculateTeamGamesPlayed(players: Collection<Player>): Int {
+    return players.sumBy { it.gamesPlayed }.div(players.size)
 }
 
-fun buildTeam(allPlayers: Map<String, Player>, teamIds: List<String>): List<Player> {
-    val teamPlayers = ArrayList<Player>()
-    teamIds.forEach { teamPlayers += allPlayers[it]!! }
-    return teamPlayers
+fun buildTeam(allPlayers: Map<String, Player>, teamIds: List<String>): Collection<Player> {
+ if(teamIds.any { !allPlayers.containsKey(it) }) {
+     throw RuntimeException("playerId list contains ids which no player has")
+ }
+  return allPlayers.filterKeys { teamIds.contains(it) }.values
 }
 
 fun addNewPlayers(existingPlayers: Map<String, Player>, game: Game, startingRating: Int): Map<String, Player> {
@@ -24,11 +21,10 @@ fun addNewPlayers(existingPlayers: Map<String, Player>, game: Game, startingRati
     val allPlayerIds = game.team1PlayerIds + game.team2PlayerIds
     allPlayerIds.forEach { playerId ->
         if (!newPlayerMap.containsKey(playerId)) {
-            newPlayerMap += Pair(playerId, Player(id = playerId,
-                    gamesPlayed = 0,
-                    wins = 0,
-                    losses = 0,
-                    currentRating = startingRating))
+            newPlayerMap += Pair(playerId, Player(
+                    id = playerId,
+                    currentRating = startingRating
+            ))
         }
     }
     return newPlayerMap

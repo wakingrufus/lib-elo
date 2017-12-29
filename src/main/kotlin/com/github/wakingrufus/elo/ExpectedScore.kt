@@ -11,7 +11,7 @@ fun calculateExpectedScore(rating1: Int, rating2: Int, xi: Int): BigDecimal {
 }
 
 private fun calculateQ(teamRating: Int, xi: Int): BigDecimal {
-    return pow(BigDecimal.TEN, BigDecimal(teamRating).divide(BigDecimal(xi), MathContext.DECIMAL32))
+    return BigDecimal.TEN.pow(BigDecimal(teamRating).divide(BigDecimal(xi), MathContext.DECIMAL32))
 }
 
 private fun calculateE(q1: BigDecimal, q2: BigDecimal): BigDecimal {

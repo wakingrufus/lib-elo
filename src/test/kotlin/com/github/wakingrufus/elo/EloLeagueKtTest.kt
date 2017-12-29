@@ -12,7 +12,7 @@ class EloLeagueKtTest {
         // data
         val player1Id = UUID.randomUUID().toString()
         val player2Id = UUID.randomUUID().toString()
-        val league = League(teamSize = 1, kFactorBase = 32, trialKFactorMultiplier = 1)
+        val league = League(kFactorBase = 32, trialKFactorMultiplier = 1)
         val game = Game(
                 id = UUID.randomUUID().toString(),
                 team1Score = 10,
@@ -48,7 +48,7 @@ class EloLeagueKtTest {
         val player2Id = UUID.randomUUID().toString()
         val player1 = Player(id = player1Id, gamesPlayed = 20, currentRating = 1200, wins = 5, losses = 15)
         val player2 = Player(id = player2Id, gamesPlayed = 15, currentRating = 1600, losses = 0, wins = 15)
-        val league = League(teamSize = 1, kFactorBase = 32, trialKFactorMultiplier = 1)
+        val league = League(kFactorBase = 32, trialKFactorMultiplier = 1)
         val game = Game(
                 id = UUID.randomUUID().toString(),
                 team1Score = 9,
