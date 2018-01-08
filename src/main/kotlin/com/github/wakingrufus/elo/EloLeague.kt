@@ -1,11 +1,13 @@
 package com.github.wakingrufus.elo
 
+import java.util.*
+
 fun calculateNewLeague(league: League, games: List<Game>): LeagueState {
-    var leagueState = LeagueState(league = league)
-    games.stream()
-            .sorted({ g1: Game, g2: Game -> (g2.entryDate.epochSecond - g1.entryDate.epochSecond).toInt() })
-            .forEach { leagueState = addGameToLeague(leagueState, it) }
-    return leagueState
+    return games.toList()
+            .sortedWith(Comparator.comparing(Game::entryDate))
+            .fold(initial = LeagueState(league = league)) { leagueState, game ->
+                addGameToLeague(leagueState, game)
+            }
 }
 
 fun addGameToLeague(leagueState: LeagueState, game: Game): LeagueState {

@@ -2,9 +2,8 @@ package com.github.wakingrufus.elo
 
 import java.math.BigDecimal
 import java.math.MathContext
-import java.math.RoundingMode
 
-fun BigDecimal.pow( exponent: BigDecimal): BigDecimal {
+fun BigDecimal.pow(exponent: BigDecimal): BigDecimal {
     val signOf2 = exponent.signum()
 
     // Perform X^(A+B)=X^A*X^B (B = remainder)

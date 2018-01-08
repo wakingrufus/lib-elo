@@ -1,11 +1,70 @@
 package com.github.wakingrufus.elo
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.time.Instant
 import java.util.*
 
+
 class EloLeagueKtTest {
+
+    @Test
+    fun `calculateNewLeague processes games in time order`() {
+        // data
+        val player1Id = UUID.randomUUID().toString()
+        val player2Id = UUID.randomUUID().toString()
+        val league = League(kFactorBase = 32, trialKFactorMultiplier = 1)
+        val game1 = Game(
+                id = UUID.randomUUID().toString(),
+                team1Score = 10,
+                team2Score = 0,
+                team1PlayerIds = listOf(player1Id),
+                team2PlayerIds = listOf(player2Id),
+                entryDate = Instant.now())
+        val game2 = Game(
+                id = UUID.randomUUID().toString(),
+                team1Score = 10,
+                team2Score = 0,
+                team1PlayerIds = listOf(player1Id),
+                team2PlayerIds = listOf(player2Id),
+                entryDate = Instant.now().plusSeconds(1))
+
+
+        val actual = calculateNewLeague(league = league, games = listOf(game1, game2))
+
+        // assertions
+        assertTrue("results for first game have starting rating of the league starting rating",
+                actual.history
+                        .filter { game1.id == it.gameId }
+                        .all { league.startingRating == it.startingRating })
+        assertTrue("", actual.history
+                .filter { game2.id == it.gameId }
+                .filter { player1Id == it.playerId }
+                .all {
+                    league.startingRating + actual.history
+                            .filter { game1.id == it.gameId }
+                            .first { player1Id == it.playerId }.ratingAdjustment == it.startingRating
+                })
+        assertTrue("", actual.history
+                .filter { game2.id == it.gameId }
+                .filter { player2Id == it.playerId }
+                .all {
+                    league.startingRating + actual.history
+                            .filter { game1.id == it.gameId }
+                            .first { player2Id == it.playerId }.ratingAdjustment == it.startingRating
+                })
+        assertEquals(game1.id, actual.history[0].gameId)
+        assertEquals(1500, actual.history[0].startingRating)
+        assertEquals(game1.id, actual.history[1].gameId)
+        assertEquals(1500, actual.history[1].startingRating)
+        assertEquals(game2.id, actual.history[2].gameId)
+        assertEquals(1500 + actual.history[0].ratingAdjustment, actual.history[2].startingRating)
+        assertEquals(game2.id, actual.history[3].gameId)
+        assertEquals(1500 + actual.history[1].ratingAdjustment, actual.history[3].startingRating)
+
+
+    }
 
     @Test
     fun calculateNewLeague() {
