@@ -6,6 +6,7 @@ Library for ELO calculations for game leagues
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.wakingrufus/lib-elo/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.wakingrufus/lib-elo)
 
 ## Features
+- Fully configurable _starting rating_, _k-factor_, and _xi_ values
 - Support for _n_-sized teams
 - "Exhibition" period: first _n_ games can have and adjustment multiplier in order to move a player to their proper rating faster. Their opponents will get an inverse multiplier.
 
@@ -14,7 +15,7 @@ Library for ELO calculations for game leagues
 First, start a league by creating a league object with the configuration for the league:
 
 ```kotlin
-val league = League(teamSize = 1, kFactorBase = 32, trialKFactorMultiplier = 1)
+val league = League(kFactorBase = 32, trialKFactorMultiplier = 2)
 ```
 
 You will probably want to persist this information within your application so that you can re-create this object at anytime
