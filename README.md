@@ -8,7 +8,8 @@ Library for ELO calculations for game leagues
 ## Features
 - Fully configurable _starting rating_, _k-factor_, and _xi_ values
 - Support for _n_-sized teams
-- "Exhibition" period: first _n_ games can have and adjustment multiplier in order to move a player to their proper rating faster. Their opponents will get an inverse multiplier.
+- "Exhibition" period: first _n_ games can have and adjustment multiplier in order to move a player to their proper rating faster. 
+  Other players will get an inverse multiplier.
 
 ## Usage
 

@@ -10,15 +10,10 @@ fun calculateKfactor(kfactorBase: Int,
                      trialPeriod: Int,
                      trialMultiplier: Int,
                      playerGamesPlayed: Int,
-                     otherPlayerGamesPlayed: Int): Int {
-    var kFactor = kfactorBase
-
-    if (playerGamesPlayed < trialPeriod) {
-        kFactor *= trialMultiplier
-
+                     allPlayers: List<Player>): Int {
+    return when {
+        playerGamesPlayed < trialPeriod -> kfactorBase * trialMultiplier
+        allPlayers.any { it.gamesPlayed < trialPeriod } -> kfactorBase / trialMultiplier
+        else -> kfactorBase
     }
-    if (otherPlayerGamesPlayed < trialPeriod) {
-        kFactor /= trialMultiplier
-    }
-    return kFactor
 }

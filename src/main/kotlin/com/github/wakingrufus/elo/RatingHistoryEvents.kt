@@ -26,6 +26,8 @@ fun calculateChanges(league: League, players: Map<String, Player>, game: Game): 
     logger.debug("team1ActualScore: " + team1ActualScore.toPlainString())
     logger.debug("team2ActualScore: " + team2ActualScore.toPlainString())
 
+    val newPlayerPresent = team1Players.plus(team2Players).any { it.gamesPlayed < league.trialPeriod }
+
     return team1Players.map { player ->
         RatingHistoryItem(
                 gameId = game.id,
@@ -36,7 +38,7 @@ fun calculateChanges(league: League, players: Map<String, Player>, game: Game): 
                                 trialPeriod = league.trialPeriod,
                                 trialMultiplier = league.trialKFactorMultiplier,
                                 playerGamesPlayed = player.gamesPlayed,
-                                otherPlayerGamesPlayed = calculateTeamGamesPlayed(team2Players)
+                                allPlayers = team1Players + team2Players
                         ),
                         score = team1ActualScore,
                         expectedScore = team1ExpectedScoreRatio
@@ -54,7 +56,7 @@ fun calculateChanges(league: League, players: Map<String, Player>, game: Game): 
                                 trialPeriod = league.trialPeriod,
                                 trialMultiplier = league.trialKFactorMultiplier,
                                 playerGamesPlayed = player.gamesPlayed,
-                                otherPlayerGamesPlayed = calculateTeamGamesPlayed(team1Players)
+                                allPlayers = team1Players + team2Players
                         ),
                         score = team2ActualScore,
                         expectedScore = team2ExpectedScoreRatio
